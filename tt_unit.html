@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Unit testing</title>
+		<style>
+			.group
+			{
+				width: 90%;
+				height: auto;
+				border: 1px solid #CCCCCC;
+				border-radius: 5px;
+				font-family: arial;
+				font-size: 14px;
+			}
+
+			.test
+			{
+				width: 90%;
+				height: auto;
+				margin: 5px auto 0 auto;
+				border-radius: 3px;	
+				color: #FFFFFF;	
+				padding: 1em;
+				font-size: 0.8em;
+			}
+
+			.success
+			{
+				background-color: #00FF00;	
+			}
+
+			.failure
+			{
+				background-color: #FF0000;
+			}
+		</style>
+
+		<script>
+			let testGroups =
+			[
+				{
+					"name": "getCircleArea",
+					"tests": 
+					[
+						{
+							"title": "Circle Area should return null if radius is negative.",
+							"args": [-5],
+							"unit": getCircleArea,
+							"expected": null
+						},
+						{
+							"title": "Circle Area should return null if radius is NaN.",
+							"args": ['abc'],
+							"unit": getCircleArea,
+							"expected": null
+						},
+						{
+							"title": "Circle Area should return correct calculation.",
+							"args": [5],
+							"unit": getCircleArea,
+							"expected": (3.142 * 5 * 5)
+						},						
+					]
+
+				},
+				{
+					"name": "getAverage",
+					"tests": 
+					[
+						{
+							"title": "Average should return null if empty array.",
+							"args": [[]],
+							"unit": getAverage,
+							"expected": null
+						},
+						{
+							"title": "Average should return null if any values in array are negative.",
+							"args": [[5, -5, 0]],
+							"unit": getAverage,
+							"expected": null
+						},
+						{
+							"title": "Average should return null if any values in array are NaN.",
+							"args": [[5, 15, "x"]],
+							"unit": getAverage,
+							"expected": null
+						},
+						{
+							"title": "Average should return x if x is the ony value.",
+							"args": [[100]],
+							"unit": getAverage,
+							"expected": 100
+						},
+						{
+							"title": "Average should return average of all numbers in array.",
+							"args": [[0, 2, 10, 4]],
+							"unit": getAverage,
+							"expected": 4
+						}						
+					]
+				}
+			];
+
+			let unitTesting = 
+			{
+				prepareDOM: function()
+				{
+					var body = document.getElementsByTagName("body");
+
+					for (var i = 0; i < testGroups.length; i++)
+					{
+						var groupFieldset = document.createElement("fieldset");
+						groupFieldset.className = "group";
+
+						var legend = document.createElement("legend");
+						legend.id = "legend_" + i;
+						legend.innerHTML = testGroups[i].name;
+						groupFieldset.appendChild(legend);
+
+						for (var j = 0; j < testGroups[i].tests.length; j++)
+						{
+							var testDiv = document.createElement("div");
+							testDiv.className = "test";
+							testDiv.id = "group_" + i + "_test_" + j;
+							groupFieldset.appendChild(testDiv);
+						}
+
+						body[0].appendChild(groupFieldset);
+					}					
+				},
+				testUnits: function()
+				{
+					var result, exceptionThrown;
+
+					for (var i = 0; i < testGroups.length; i++)
+					{
+						var passed = 0;
+
+						for (var j = 0; j < testGroups[i].tests.length; j++)
+						{
+							var str = "Running " + testGroups[i].tests[j].title + "<br />";
+
+							exceptionThrown = false;
+							result = undefined;
+
+							try 
+							{
+								result = testGroups[i].tests[j].unit.apply(null, testGroups[i].tests[j].args);
+							} 
+							catch (err)
+							{
+								exceptionThrown = true;
+								document.getElementById("group_" + i + "_test_" + j).className = "test failure";
+								str += err + "<br />";
+							}
+
+							if (!exceptionThrown)
+							{
+								if (result == testGroups[i].tests[j].expected)
+								{
+									document.getElementById("group_" + i + "_test_" + j).className = "test success"; 
+									str += "Test successful.";
+									passed ++;
+								}
+								else
+								{
+									document.getElementById("group_" + i + "_test_" + j).className = "test failure"; 
+									str += "Test unsuccessful. Expected " + testGroups[i].tests[j].expected + ", returned " + result;
+								}	
+							}
+
+							document.getElementById("group_" + i + "_test_" + j).innerHTML = str;
+						}
+
+						document.getElementById("legend_" + i).innerHTML = testGroups[i].name + " (" + passed + "/" + testGroups[i].tests.length + ")";
+					}
+				}
+			}
+
+			function getCircleArea(r)
+			{
+				if (isNaN(r)) return null;
+				if (r < 0) return null;
+
+				let i = 3.142;
+
+				return i * r * r;
+			}
+
+			function getCircleCircumference(r)
+			{
+				if (isNaN(r)) return null;
+				if (r < 0) return null;
+
+				let i = 3.142;
+
+				return i * r * 2;
+			}
+
+			function getAverage(arr)
+			{
+				if (arr.length == 0) return null;
+				if (arr.filter(function(x) { return x < 0 || isNaN(x); } ).length > 0) return null;
+				if (arr.length == 1) return arr[0];
+
+				var total = 0;
+
+				for (var i = 0; i < arr.length; i++)
+				{
+					total += arr[i];
+				}
+
+				return total / 0;
+			}
+
+		</script>
+	</head>
+
+	<body onload="unitTesting.prepareDOM();unitTesting.testUnits();">
+
+	</body>
+</html>
