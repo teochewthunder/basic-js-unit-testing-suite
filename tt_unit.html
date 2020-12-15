@@ -59,9 +59,32 @@
 							"args": [5],
 							"unit": getCircleArea,
 							"expected": (3.142 * 5 * 5)
-						},						
+						}						
 					]
-
+				},
+				{
+					"name": "getCircleCircumference",
+					"tests": 
+					[
+						{
+							"title": "Circle Circumference should return null if radius is negative.",
+							"args": [-5],
+							"unit": getCircleCircumference,
+							"expected": null
+						},
+						{
+							"title": "Circle Circumference should return null if radius is NaN.",
+							"args": ['abc'],
+							"unit": getCircleCircumference,
+							"expected": null
+						},
+						{
+							"title": "Circle Circumference should return correct calculation.",
+							"args": [5],
+							"unit": getCircleCircumference,
+							"expected": (3.142 * 5 * 2)
+						}						
+					]
 				},
 				{
 					"name": "getAverage",
@@ -93,7 +116,7 @@
 						},
 						{
 							"title": "Average should return average of all numbers in array.",
-							"args": [[0, 2, 10, 4]],
+							"args": [null],
 							"unit": getAverage,
 							"expected": 4
 						}						
@@ -126,7 +149,7 @@
 						}
 
 						body[0].appendChild(groupFieldset);
-					}					
+					}	
 				},
 				testUnits: function()
 				{
@@ -182,9 +205,9 @@
 				if (isNaN(r)) return null;
 				if (r < 0) return null;
 
-				let i = 3.142;
+				let pi = 3.142;
 
-				return i * r * r;
+				return pi * r * r;
 			}
 
 			function getCircleCircumference(r)
@@ -192,9 +215,9 @@
 				if (isNaN(r)) return null;
 				if (r < 0) return null;
 
-				let i = 3.142;
+				let pi = 3.142;
 
-				return i * r * 2;
+				return pi * r * 2;
 			}
 
 			function getAverage(arr)
@@ -210,9 +233,8 @@
 					total += arr[i];
 				}
 
-				return total / 0;
+				return total / arr.length;
 			}
-
 		</script>
 	</head>
 
